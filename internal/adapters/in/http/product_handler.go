@@ -2,13 +2,14 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	"go-ms/internal/core"
+	core "go-ms/internal/core/ports"
 )
 
 type createProductRequest struct {
@@ -76,6 +77,7 @@ func (h *ProductHandler) createProduct(w http.ResponseWriter, r *http.Request) {
 	p, err := h.uc.CreateProduct(in.Name, in.Price, in.Stock)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Println("error al crear", err)
 		return
 	}
 	writeJSON(w, http.StatusCreated, productResponse{Id: p.Id, Name: p.Name, Price: p.Price, Stock: p.Stock})
@@ -87,6 +89,7 @@ func (h *ProductHandler) listProducts(w http.ResponseWriter, r *http.Request) {
 	list, err := h.uc.GetAllProducts()
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
+		fmt.Println("error del getAll products", err)
 		return
 	}
 	out := make([]productResponse, 0, len(list))

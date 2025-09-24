@@ -4,8 +4,8 @@ import (
 	"github.com/google/uuid"
 
 	"go-ms/internal/common/errs"
-	"go-ms/internal/core"
 	"go-ms/internal/core/domain"
+	core "go-ms/internal/core/ports"
 )
 
 type productService struct {

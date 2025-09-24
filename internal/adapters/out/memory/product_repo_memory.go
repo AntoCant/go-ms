@@ -2,8 +2,8 @@ package memory
 
 import (
 	"fmt"
-	"go-ms/internal/core"
 	"go-ms/internal/core/domain"
+	core "go-ms/internal/core/ports"
 	"sync"
 )
 
