@@ -32,22 +32,22 @@ func (s *productService) CreateProduct(name string, price float64, stock int) (d
 	return p, nil
 }
 
-func (s *productService) GetAllProducts() ([]domain.Product, error) {
-	return s.repo.FindAll()
+func (s *productService) GetAllProducts(limit, offset int) ([]domain.Product, error) {
+	return s.repo.FindAll(limit, offset)
 }
 
 func (s *productService) GetProductById(productId string) (domain.Product, error) {
 
 	if productId == "" {
-		return domain.Product{}, errs.PorductIdNotFound
+		return domain.Product{}, errs.ErrProductNotFound
 	}
-	return s.repo.FindByIdProduct(productId)
+	return s.repo.FindByID(productId)
 }
 
 func (s *productService) UpdateProduct(productId string, name string, price float64, stock int) (domain.Product, error) {
 
 	if productId == "" {
-		return domain.Product{}, errs.PorductNotFound // o un ErrInvalidID/BadRequest si tienes
+		return domain.Product{}, errs.ErrProductNotFound // o un ErrInvalidID/BadRequest si tienes
 	}
 	if price <= 0 {
 		return domain.Product{}, errs.ErrBadRequest
@@ -56,7 +56,7 @@ func (s *productService) UpdateProduct(productId string, name string, price floa
 		return domain.Product{}, errs.ErrBadRequest
 	}
 
-	product, err := s.repo.FindByIdProduct(productId)
+	product, err := s.repo.FindByID(productId)
 	if err != nil {
 		return domain.Product{}, err
 	}
@@ -75,11 +75,11 @@ func (s *productService) UpdateProduct(productId string, name string, price floa
 
 func (s *productService) DeleteProduct(productId string) error {
 	if productId == "" {
-		return errs.PorductNotFound
+		return errs.ErrProductNotFound
 	}
 
-	if _, err := s.repo.FindByIdProduct(productId); err != nil {
+	if _, err := s.repo.FindByID(productId); err != nil {
 		return err
 	}
-	return s.repo.DeleteProductById(productId)
+	return s.repo.DeleteByID(productId)
 }

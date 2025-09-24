@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -86,16 +87,37 @@ func (h *ProductHandler) createProduct(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) listProducts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	list, err := h.uc.GetAllProducts()
+	// Leer query params: ?limit=10&offset=20
+	limit := 10 // valor por defecto
+	offset := 0 // valor por defecto
+
+	if l := r.URL.Query().Get("limit"); l != "" {
+		if val, err := strconv.Atoi(l); err == nil {
+			limit = val
+		}
+	}
+	if o := r.URL.Query().Get("offset"); o != "" {
+		if val, err := strconv.Atoi(o); err == nil {
+			offset = val
+		}
+	}
+
+	// Llamar al caso de uso con paginación
+	list, err := h.uc.GetAllProducts(limit, offset)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
-		fmt.Println("error del getAll products", err)
+		fmt.Println("error del getAll products:", err)
 		return
 	}
+
+	// Mapear al response DTO
 	out := make([]productResponse, 0, len(list))
 	for _, p := range list {
-		out = append(out, productResponse{Id: p.Id, Name: p.Name, Price: p.Price, Stock: p.Stock})
+		out = append(out, productResponse{
+			Id: p.Id, Name: p.Name, Price: p.Price, Stock: p.Stock,
+		})
 	}
+
 	writeJSON(w, http.StatusOK, out)
 }
 
