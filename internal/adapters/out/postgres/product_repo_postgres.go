@@ -95,7 +95,7 @@ func (productRepository *ProductRepository) FindByID(id string) (domain.Product,
 			&product.Stock)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return domain.Product{}, errorCore.ErrInvalidProductID // definí ErrProductNotFound en core/errs
+			return domain.Product{}, errorCore.ErrInvalidProductID
 		}
 		return domain.Product{}, err
 	}

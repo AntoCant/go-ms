@@ -22,7 +22,7 @@ func main() {
 	// o usar un valor por defecto (útil en dev/local).
 	dsn := os.Getenv("PG_DSN")
 	if dsn == "" {
-		dsn = "postgres://admin:admin@localhost:5432/productsdb?sslmode=disable"
+		dsn = "postgres://admin:admin@localhost:5433/productsdb?sslmode=disable"
 	}
 
 	// Crear el pool de conexiones con pgxpool
