@@ -59,7 +59,7 @@ func (productRepository *ProductRepository) FindAll(limit, offset int) ([]domain
 	ctx, cancel := contextWithTimeout()
 	defer cancel()
 
-	rows, err := productRepository.pool.Query(ctx, selectAllProductsQuery)
+	rows, err := productRepository.pool.Query(ctx, selectAllProductsQuery, limit, offset)
 	if err != nil {
 		return nil, err
 	}
